@@ -99,13 +99,16 @@ def create_job(ref, template, config, ref_config):
     el = scm_el.xpath('//hudson.plugins.git.BranchSpec/name')[0]
     # :todo: jenkins is being very capricious about the branch-spec
     # el.text = '%s/%s' % (remote, shortref)  # :todo:
-    el.text = shortref
+    if config["add_origin"]:
+        el.text = '%s/%s' % ("origin", shortref)
+    else:
+        el.text = shortref
 
     # Set the branch that the git plugin will locally checkout to.
-    el = scm_el.xpath('//localBranch')
-    el = etree.SubElement(scm_el, 'localBranch') if not el else el[0]
-
-    el.text = shortref  # the original shortref (with '/')
+    if config["use_local_branch"]:
+        el = scm_el.xpath('//localBranch')
+        el = etree.SubElement(scm_el, 'localBranch') if not el else el[0]
+        el.text = shortref  # the original shortref (with '/')
 
     # Set the state of the newly created job.
     job.set_state(ref_config['enable'])
