@@ -105,7 +105,9 @@ def create_job(ref, template, config, ref_config):
         el.text = shortref
 
     # Set the branch that the git plugin will locally checkout to.
-    if config["use_local_branch"]:
+
+
+    if (not config.has_key("use_local_branch")) or config["use_local_branch"]:
         el = scm_el.xpath('//localBranch')
         el = etree.SubElement(scm_el, 'localBranch') if not el else el[0]
         el.text = shortref  # the original shortref (with '/')
